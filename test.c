@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "lept_json.h"
+#include "leptjson.h"
 
 void test_parse() {
 	lept_value v;
