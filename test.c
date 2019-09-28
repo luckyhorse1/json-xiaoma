@@ -18,35 +18,29 @@ static int test_pass = 0;
 
 #define EXPECT_EQ_INT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%d")
 
+#define TEST_ERR(err_type, json)\
+	do {\
+		lept_value v;\
+		v.type = LEPT_NULL;\
+		EXPECT_EQ_INT(err_type, lept_parse(&v, json));\
+		EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));\
+	} while(0)
+
 static void test_parse_all_blank() {
-	lept_value v;
-	v.type = LEPT_NULL;
-	EXPECT_EQ_INT(LEPT_PARSE_ALL_BLANK, lept_parse(&v, ""));
-	EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
-	
-	EXPECT_EQ_INT(LEPT_PARSE_ALL_BLANK, lept_parse(&v, " \t \n \r "));
-	EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
+	TEST_ERR(LEPT_PARSE_ALL_BLANK, "");
+	TEST_ERR(LEPT_PARSE_ALL_BLANK, " \t \n \r");
 }
 
 static void test_parse_invalid_type() {
-	lept_value v;
-	v.type = LEPT_NULL;
-	EXPECT_EQ_INT(LEPT_PARSE_INVALID_TYPE, lept_parse(&v, "nul f"));
-	EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
-	
-	EXPECT_EQ_INT(LEPT_PARSE_INVALID_TYPE, lept_parse(&v, "?"));
-	EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
+	TEST_ERR(LEPT_PARSE_INVALID_TYPE, "nul f");
+	TEST_ERR(LEPT_PARSE_INVALID_TYPE, "?");
 }
 
 static void test_parse_not_single() {
-	lept_value v;
-	v.type = LEPT_NULL;
-	EXPECT_EQ_INT(LEPT_PARSE_NOT_SINGLE, lept_parse(&v, "null f"));
-	EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
-	
-	EXPECT_EQ_INT(LEPT_PARSE_NOT_SINGLE, lept_parse(&v, "true ?"));
-	EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
+	TEST_ERR(LEPT_PARSE_NOT_SINGLE, "null f");
+	TEST_ERR(LEPT_PARSE_NOT_SINGLE, "true ?");
 }
+
 static void test_parse_null() {
 	lept_value v;
 	v.type = LEPT_NULL;
