@@ -144,6 +144,22 @@ static void test_parse_string() {
 #endif
 }
 
+static void  test_access_null() {
+	lept_value v;
+	lept_init(&v);
+	lept_set_string(&v, "a", 1);
+	lept_set_null(&v);
+	EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
+}
+
+static void test_access_boolean() {
+	lept_value v;
+	lept_init(&v);
+	lept_set_string(&v, "a", 1);
+	lept_set_boolean(&v, 1);
+	EXPECT_EQ_INT(LEPT_TRUE, lept_get_type(&v));
+}
+
 static void test_parse() {
 	test_parse_all_blank();
 	test_parse_invalid_type();
@@ -154,6 +170,9 @@ static void test_parse() {
 	test_parse_false();
 	test_parse_number();
 	test_parse_string();
+
+	test_access_null();
+	test_access_boolean();
 }
 
 int main(void) {

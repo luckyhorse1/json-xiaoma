@@ -31,6 +31,10 @@ int lept_parse(lept_value * v, const char * json);
 
 lept_type lept_get_type(const lept_value * v);
 
+#define  lept_set_null(v) lept_free(v)
+
+void lept_set_boolean(lept_value * v, int b);
+
 double lept_get_number(const lept_value * v);
 
 void lept_set_string(lept_value * v, const char * s, size_t len);
