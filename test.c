@@ -18,6 +18,8 @@ static int test_pass = 0;
 
 #define EXPECT_EQ_INT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%d")
 #define EXPECT_EQ_DOUBLE(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%.17g")
+#define EXPECT_EQ_STRING(expect, actual, alength)\
+	EXPECT_EQ_BASE(sizeof(expect) - 1 == alength && memcmp(expect, actual, alength)==0, expect, actual, "%s")
 
 #define TEST_ERR(err_type, json)\
 	do {\
@@ -34,6 +36,16 @@ static int test_pass = 0;
 		EXPECT_EQ_INT(LEPT_NUMBER, lept_get_type(&v));\
 		EXPECT_EQ_DOUBLE(expect, lept_get_number(&v));\
 	}while(0)
+
+#define TEST_STRING(expect, json)\
+	do {\
+		lept_value v;\
+		lept_init(&v);\
+		EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, json));\
+		EXPECT_EQ_INT(LEPT_STRING, lept_get_type(&v));\
+		EXPECT_EQ_STRING(expect, lept_get_string(&v), lept_get_string_length(&v));\
+		lept_free(&v);\
+	} while(0)
 
 static void test_parse_all_blank() {
 	TEST_ERR(LEPT_PARSE_ALL_BLANK, "");
@@ -123,6 +135,15 @@ static void test_parse_number() {
     TEST_NUMBER(-1.7976931348623157e+308, "-1.7976931348623157e+308");
 }
 
+static void test_parse_string() {
+	TEST_STRING("", "\"\"");
+	TEST_STRING("xiaoma", "\"xiaoma\"");
+#if 0
+	TEST_STRING("hello\nxiaoma", "\"hello\\nxiaoma");
+	TEST_STRING("\" \\ / \b \r \t \n \f", "\"\\" \\\\ \\/ \\b \\r \\t \\n  \\f\"")
+#endif
+}
+
 static void test_parse() {
 	test_parse_all_blank();
 	test_parse_invalid_type();
@@ -132,6 +153,7 @@ static void test_parse() {
 	test_parse_true();
 	test_parse_false();
 	test_parse_number();
+	test_parse_string();
 }
 
 int main(void) {
