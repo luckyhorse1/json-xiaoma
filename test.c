@@ -144,6 +144,18 @@ static void test_parse_string() {
 #endif
 }
 
+static void test_parse_invalid_string_escape() {
+    TEST_ERR(LEPT_PARSE_INVALID_STRING_ESCAPE, "\"\\v\"");
+    TEST_ERR(LEPT_PARSE_INVALID_STRING_ESCAPE, "\"\\'\"");
+    TEST_ERR(LEPT_PARSE_INVALID_STRING_ESCAPE, "\"\\0\"");
+    TEST_ERR(LEPT_PARSE_INVALID_STRING_ESCAPE, "\"\\x12\"");
+}
+
+static void test_parse_invalid_string_char() {
+    TEST_ERR(LEPT_PARSE_INVALID_STRING_CHAR, "\"\x01\"");
+    TEST_ERR(LEPT_PARSE_INVALID_STRING_CHAR, "\"\x1F\"");
+}
+
 static void  test_access_null() {
 	lept_value v;
 	lept_init(&v);
@@ -165,6 +177,9 @@ static void test_parse() {
 	test_parse_invalid_type();
 	test_parse_not_single();
 	test_parse_number_too_big();
+	test_parse_invalid_string_escape();
+	test_parse_invalid_string_char();
+
 	test_parse_null();
 	test_parse_true();
 	test_parse_false();
