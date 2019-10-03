@@ -7,28 +7,34 @@
 
 typedef enum {LEPT_NULL, LEPT_TRUE, LEPT_FALSE, LEPT_NUMBER, LEPT_STRING, LEPT_ARRAY, LEPT_OBJECT} lept_type;
 
-typedef struct {
+typedef struct lept_value lept_value;
+struct lept_value {
 	union{
+		double n;
 		struct {
 			char * s;
 			size_t len;
 		} s;
-		double n;
+		struct {
+			lept_value * e;
+			size_t size;
+		} a;
 	} u;
 	lept_type type;
-} lept_value;
+};
 
 enum {
 	LEPT_PARSE_OK, 
 	LEPT_PARSE_ALL_BLANK, 
-	LEPT_PARSE_INVALID_TYPE, 
+	LEPT_PARSE_INVALID_VALUE, 
 	LEPT_PARSE_NOT_SINGLE,
 	LEPT_PARSE_NUMBER_TOO_BIG,
 	LEPT_PARSE_MISS_QUOTATION_MARK,
 	LEPT_PARSE_INVALID_STRING_ESCAPE,
 	LEPT_PARSE_INVALID_STRING_CHAR,
 	LEPT_PARSE_INVALID_UNICODE_HEX,
-	LEPT_PARSE_INVALID_UNICODE_SURROGATE
+	LEPT_PARSE_INVALID_UNICODE_SURROGATE,
+	LEPT_PARSE_MISS_COMMA_OR_SQUARE_BRACKET
 };
 
 int lept_parse(lept_value * v, const char * json);
@@ -46,6 +52,10 @@ void lept_set_string(lept_value * v, const char * s, size_t len);
 const char* lept_get_string(const lept_value * v);
 
 size_t lept_get_string_length(const lept_value * v);
+
+size_t lept_get_array_size(const lept_value * v);
+
+const lept_value * lept_get_array_element(const lept_value * v, size_t index);
 
 void lept_free(lept_value * v);
 
