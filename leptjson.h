@@ -76,6 +76,13 @@ size_t lept_get_object_size(const lept_value* v);
 const char* lept_get_object_key(const lept_value* v, size_t index);
 size_t lept_get_object_key_length(const lept_value* v, size_t index);
 lept_value* lept_get_object_value(const lept_value* v, size_t index);
+size_t lept_find_object_index(const lept_value * v, const char * key, size_t klen);
+lept_value * lept_find_object_value(const lept_value * v, const char * key, size_t klen);
+
+int lept_is_equal(const lept_value * v1, const lept_value * v2);
+void lept_copy(lept_value * dst, const lept_value * src);
+void lept_move(lept_value * dst, lept_value * src);
+void lept_swap(lept_value *v1, lept_value * v2);
 
 char* lept_stringify(const lept_value* v, size_t* length);
 void lept_free(lept_value * v);
